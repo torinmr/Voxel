@@ -9,7 +9,7 @@ function initCubes() {
     cubeSingleton.texture.image.onload = function() {
         handleLoadedTexture(cubeSingleton.texture);
     }
-    cubeSingleton.texture.image.src = "stone.png";
+    cubeSingleton.texture.image.src = "sand.png";
 
     // Init the buffers
     cubeSingleton.vertexPositionBuffer = gl.createBuffer();

@@ -7,51 +7,48 @@ function degToRad(degrees) {
 }
 
 var initControls = function (canvas, player) {
-    player.x = 5.0;
-    player.y = 5.0;
-    player.z = 50.0;
+    player.x = 20.0;
+    player.y = 12.0;
+    player.z = 20.0;
     player.pitch = 0.0;
     player.yaw = 0.0;
 
+    var dvorak = false;
     var handleKeysInternal = function () {
-        var dvorak = document.getElementById("dvorak").checked;
+        var verticalSpeed = 0.4;
+        var forwardSpeed = 0.8;
+        var backSpeed = 0.8;
+        var strafeSpeed = 0.5;
 
-        var left, right, forward, back, up, down;
-        if (dvorak) {
-            left    = 65;  // A
-            right   = 69;  // E
-            forward = 188; // ,
-            back    = 79;  // O
-            up      = 222; // '
-            down    = 81;  // Q
-        } else {
-            left    = 65;  // A
-            right   = 68;  // D
-            forward = 87;  // W
-            back    = 83;  // S
-            up      = 81;  // Q
-            down    = 90;  // Z
-        }
+        var left, right, forward, back, up, down, switchLayout;
 
-        if (currentlyPressedKeys[up]) {
-            player.y += 0.1;
-        }
-        if (currentlyPressedKeys[down]) {
-            player.y -= 0.1;
-        }
-
-        var forwardSpeed = 0.3;
-        var backSpeed = 0.3;
-        var strafeSpeed = 0.2;
         var cy = Math.cos(degToRad(player.yaw));
         var cp = Math.cos(degToRad(player.pitch));
         var sy = Math.sin(degToRad(player.yaw));
         var sp = Math.sin(degToRad(player.pitch));
 
-        var forward = currentlyPressedKeys[forward];
-        var back = currentlyPressedKeys[back];
-        var left = currentlyPressedKeys[left];
-        var right = currentlyPressedKeys[right];
+        if (dvorak) {
+            left         = currentlyPressedKeys[65];  // A
+            right        = currentlyPressedKeys[69];  // E
+            forward      = currentlyPressedKeys[188]; // ,
+            back         = currentlyPressedKeys[79];  // O
+            up           = currentlyPressedKeys[222]; // '
+            down         = currentlyPressedKeys[81];  // Q
+        } else {
+            left         = currentlyPressedKeys[65];  // A
+            right        = currentlyPressedKeys[68];  // D
+            forward      = currentlyPressedKeys[87];  // W
+            back         = currentlyPressedKeys[83];  // S
+            up           = currentlyPressedKeys[81];  // Q
+            down         = currentlyPressedKeys[88];  // X
+        }
+        
+        if (up) {
+            player.y += verticalSpeed;
+        }
+        if (down) {
+            player.y -= verticalSpeed;
+        }
        
         var adjustment = 1;
         if ((forward || back) && (left || right)) {
@@ -87,7 +84,15 @@ var initControls = function (canvas, player) {
     var currentlyPressedKeys = {};
     
     function handleKeyDown(event) {
+        console.log(event.keyCode);
         currentlyPressedKeys[event.keyCode] = true;
+
+        if (event.keyCode === 48) { // number 0
+            console.log("Switching keyboard layout!");
+            dvorak = ! dvorak;
+            console.log("dvorak now = " + dvorak);
+        }
+
     }
     
     function handleKeyUp(event) {
@@ -111,6 +116,15 @@ var initControls = function (canvas, player) {
         player.pitch -= movementY/10;
     }
 
+    var handleResize = function() {
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        console.log("Resize!: h=" + canvas.height + ", w=" + canvas.width);
+
+    }
+
+    window.onresize = handleResize;
+
     var havePointerLock = 'pointerLockElement' in document ||
         'mozPointerLockElement' in document ||
         'webkitPointerLockElement' in document;
@@ -118,7 +132,29 @@ var initControls = function (canvas, player) {
     if (havePointerLock) {
         console.log("Have pointer lock.");
 
-        var changeCallback = function () {
+        var fullscreenChangeCallback = function() {
+            if (document.fullscreenElement === canvas ||
+                document.mozFullscreenElement === canvas ||
+                document.webkitFullscreenElement === canvas) {
+                console.log("Fullscreen acquired, about to request pointer lock");
+
+                canvas.width = screen.width;
+                canvas.height = screen.height;
+                canvas.requestPointerLock = canvas.requestPointerLock ||
+                    canvas.mozRequestPointerLock ||
+                    canvas.webkitRequestPointerLock;
+                canvas.requestPointerLock();
+            } else {
+                console.log("Fullscreen exited, exiting pointer lock.");
+                handleResize();
+                document.exitPointerLock = document.exitPointerLock ||
+                    document.mozExitPointerLock ||
+                    document.webkitExitPointerLock;
+                document.exitPointerLock();
+            }
+        }
+
+        var pointerLockChangeCallback = function () {
             if (document.pointerLockElement === canvas ||
                 document.mozPointerLockElement === canvas ||
                 document.webkitPointerLockElement === canvas) {
@@ -130,27 +166,36 @@ var initControls = function (canvas, player) {
             }
         }
 
+        document.addEventListener('fullscreenchange',
+                                  fullscreenChangeCallback, false);
+        document.addEventListener('mozfullscreenchange',
+                                  fullscreenChangeCallback, false);
+        document.addEventListener('webkitfullscreenchange',
+                                  fullscreenChangeCallback, false);
+            
         document.addEventListener('pointerlockchange',
-                                  changeCallback, false);
+                                  pointerLockChangeCallback, false);
         document.addEventListener('mozpointerlockchange',
-                                  changeCallback, false);
+                                  pointerLockChangeCallback, false);
         document.addEventListener('webkitpointerlockchange',
-                                  changeCallback, false);
+                                  pointerLockChangeCallback, false);
     } else {
         console.log("Don't have pointer lock.");
     }
 
-    var getPointerLock = function () {
-        console.log("About to request pointer lock");
-
-        canvas.requestPointerLock = canvas.requestPointerLock ||
-            canvas.mozRequestPointerLock ||
-            canvas.webkitRequestPointerLock;
-        canvas.requestPointerLock();
+    document.onmousedown = function () {
+        if (document.fullscreenElement !== canvas &&
+            document.mozFullscreenElement !== canvas &&
+            document.webkitFullscreenElement !== canvas) {
+            
+            console.log("About to request fullscreen");
+            canvas.requestFullscreen = canvas.requestFullscreen ||
+                canvas.mozRequestFullscreen ||
+                canvas.webkitRequestFullscreen;
+            canvas.requestFullscreen();
+        }
     }
-        /*    canvas.onmousedown = handleMouseDown;
-    document.onmouseup = handleMouseUp; */
-    document.onmousedown = getPointerLock;
+
     document.onkeydown = handleKeyDown;
     document.onkeyup = handleKeyUp;
 }

@@ -53,12 +53,19 @@
     <script type="text/javascript" src="controls.js"></script>
     <script type="text/javascript" src="cube.js"></script>
     <script type="text/javascript" src="script.js"></script>
+    
+    <style type="text/css">
+      :-webkit-full-screen #gamecanvas {
+      width: 100%;
+      height: 100%;
+      }
+    </style>
   </head>
   <body onload="webGLStart();">
     <h1>Hello World!</h1>
     <br>
 
-    <canvas id="test01-canvas" style="border: none;" width="1280" height="800"></canvas>
+    <canvas id="gamecanvas" style="border: none; position:fixed; left:0; top:0;" height="600" width="800"></canvas>
     <br>
     <div id="framerate">10</div>
     <br>
@@ -71,9 +78,9 @@
     <table style"border: 0; padding: 10px;">
       <tr>
         <td><b>Direction:</b>
-        <td>X: <input type="text" id="lightDirectionX" value="1.0" />
-        <td>Y: <input type="text" id="lightDirectionY" value="0.5" />
-        <td>Z: <input type="text" id="lightDirectionZ" value="-1.0" />
+        <td>X: <input type="text" id="lightDirectionX" value="0.5" />
+        <td>Y: <input type="text" id="lightDirectionY" value="1.0" />
+        <td>Z: <input type="text" id="lightDirectionZ" value="-0.5" />
       </tr>
       <tr>
         <td><b>Color:</b>
@@ -88,9 +95,9 @@
     <table style="border: 0; padding: 10px;">
       <tr>
         <td><b>Color:</b>
-          <td>R: <input type="text" id="ambientR" value="0.2" />
-          <td>G: <input type="text" id="ambientG" value="0.2" />
-          <td>B: <input type="text" id="ambientB" value="0.2" />
+          <td>R: <input type="text" id="ambientR" value="0.4" />
+          <td>G: <input type="text" id="ambientG" value="0.4" />
+          <td>B: <input type="text" id="ambientB" value="0.4" />
       </tr>
     </table>
 

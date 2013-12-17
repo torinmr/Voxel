@@ -1,6 +1,7 @@
 "use strict";
 
 var gl;
+var canvas;
 function initGL(canvas) {
     try {
         gl = canvas.getContext("experimental-webgl");
@@ -135,7 +136,7 @@ function degToRad(degrees) {
 }
 
 
-var worldSize = 20;
+var worldSize = 30;
 var world = new Array(worldSize*worldSize*worldSize);
 
 function flattenCoordinates(x, y, z) {
@@ -146,7 +147,12 @@ function initWorldObjects() {
     for (var i=0; i < worldSize; i++) {
         for (var j=0; j < worldSize; j++) {
             for (var k=0; k < worldSize; k++) {
-                world[flattenCoordinates(i, j, k)] = new Cube(true);
+                if (5 + 3*Math.cos(i*2*Math.PI/worldSize) +
+                    + 3*Math.sin(k*1*Math.PI/worldSize) > j) {
+                    world[flattenCoordinates(i, j, k)] = new Cube(true);
+                } else {
+                    world[flattenCoordinates(i, j, k)] = new Cube(false);
+                }
             }
         }
     }
@@ -183,7 +189,7 @@ function updateLighting() {
 var player = {};
 
 function drawScene() {
-    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+    gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // Set up perspective and movement matrices
@@ -200,9 +206,9 @@ function drawScene() {
         for (var j=0; j < worldSize; j++) {
             mvPushMatrix();
             for (var k=0; k < worldSize; k++) {
-                var back = (k == worldSize-1) ||  !world[flattenCoordinates(i, j, k+1)].isActive;
+                var back = (k == worldSize-1) || !world[flattenCoordinates(i, j, k+1)].isActive;
                 var front = (k == 0) || !world[flattenCoordinates(i, j, k-1)].isActive;
-                var up = (j == worldSize-1) ||    !world[flattenCoordinates(i, j+1, k)].isActive;
+                var up = (j == worldSize-1) || !world[flattenCoordinates(i, j+1, k)].isActive;
                 var down = (j == 0) || !world[flattenCoordinates(i, j-1, k)].isActive;
                 var right = (i == worldSize-1) || !world[flattenCoordinates(i+1, j, k)].isActive;
                 var left = (i == 0) || !world[flattenCoordinates(i-1, j, k)].isActive;
@@ -247,7 +253,10 @@ function tick() {
 }
 
 function webGLStart() {
-    var canvas = document.getElementById("test01-canvas");
+    canvas = document.getElementById("gamecanvas");
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
     initGL(canvas);
     initShaders();
     initCubes();
@@ -256,7 +265,6 @@ function webGLStart() {
     
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
-
 
     tick();
 }
