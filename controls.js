@@ -2,30 +2,26 @@
 
 var handleKeys;
 
-function degToRad(degrees) {
-    return degrees * Math.PI / 180;
-}
+var initControls = function (canvas) {
+    world.player.x = 20.0;
+    world.player.y = 12.0;
+    world.player.z = 20.0;
+    world.player.pitch = 0.0;
+    world.player.yaw = 0.0;
 
-var initControls = function (canvas, player) {
-    player.x = 20.0;
-    player.y = 12.0;
-    player.z = 20.0;
-    player.pitch = 0.0;
-    player.yaw = 0.0;
-
-    var dvorak = false;
+    var dvorak = true;
     var handleKeysInternal = function () {
         var verticalSpeed = 0.4;
         var forwardSpeed = 0.8;
         var backSpeed = 0.8;
         var strafeSpeed = 0.5;
 
-        var left, right, forward, back, up, down, switchLayout;
+        var left, right, forward, back, up, down, run;
 
-        var cy = Math.cos(degToRad(player.yaw));
-        var cp = Math.cos(degToRad(player.pitch));
-        var sy = Math.sin(degToRad(player.yaw));
-        var sp = Math.sin(degToRad(player.pitch));
+        var cy = Math.cos(degToRad(world.player.yaw));
+        var cp = Math.cos(degToRad(world.player.pitch));
+        var sy = Math.sin(degToRad(world.player.yaw));
+        var sp = Math.sin(degToRad(world.player.pitch));
 
         if (dvorak) {
             left         = currentlyPressedKeys[65];  // A
@@ -34,6 +30,7 @@ var initControls = function (canvas, player) {
             back         = currentlyPressedKeys[79];  // O
             up           = currentlyPressedKeys[222]; // '
             down         = currentlyPressedKeys[81];  // Q
+            run          = currentlyPressedKeys[16];  // SHIFT
         } else {
             left         = currentlyPressedKeys[65];  // A
             right        = currentlyPressedKeys[68];  // D
@@ -41,13 +38,20 @@ var initControls = function (canvas, player) {
             back         = currentlyPressedKeys[83];  // S
             up           = currentlyPressedKeys[81];  // Q
             down         = currentlyPressedKeys[88];  // X
+            run          = currentlyPressedKeys[16];  // SHIFT
         }
         
+        if (run) {
+            verticalSpeed *= 10;
+            forwardSpeed *= 10;
+            backSpeed *= 10;
+            strafeSpeed *= 10;
+        }
         if (up) {
-            player.y += verticalSpeed;
+            world.player.y += verticalSpeed;
         }
         if (down) {
-            player.y -= verticalSpeed;
+            world.player.y -= verticalSpeed;
         }
        
         var adjustment = 1;
@@ -57,25 +61,25 @@ var initControls = function (canvas, player) {
                                     
 
         if (forward && !back) {
-            player.z -= forwardSpeed*cy*cp*adjustment;
-            player.x -= forwardSpeed*sy*cp*adjustment;
-            player.y += forwardSpeed*sp*adjustment;
+            world.player.z -= forwardSpeed*cy*cp*adjustment;
+            world.player.x -= forwardSpeed*sy*cp*adjustment;
+            world.player.y += forwardSpeed*sp*adjustment;
         }
 
         if (back && !forward) {
-            player.z += backSpeed*cy*cp*adjustment;
-            player.x += backSpeed*sy*cp*adjustment;
-            player.y -= backSpeed*sp*adjustment;
+            world.player.z += backSpeed*cy*cp*adjustment;
+            world.player.x += backSpeed*sy*cp*adjustment;
+            world.player.y -= backSpeed*sp*adjustment;
         }
 
         if (left && !right) {
-            player.z += strafeSpeed*sy*adjustment;
-            player.x -= strafeSpeed*cy*adjustment;
+            world.player.z += strafeSpeed*sy*adjustment;
+            world.player.x -= strafeSpeed*cy*adjustment;
         }
 
         if (right && !left) {
-            player.z -= strafeSpeed*sy*adjustment;
-            player.x += strafeSpeed*cy*adjustment;
+            world.player.z -= strafeSpeed*sy*adjustment;
+            world.player.x += strafeSpeed*cy*adjustment;
         }
     }
 
@@ -92,7 +96,6 @@ var initControls = function (canvas, player) {
             dvorak = ! dvorak;
             console.log("dvorak now = " + dvorak);
         }
-
     }
     
     function handleKeyUp(event) {
@@ -112,8 +115,32 @@ var initControls = function (canvas, player) {
             event.webkitMovementY ||
             0;
 
-        player.yaw -= movementX/10;
-        player.pitch -= movementY/10;
+        world.player.yaw -= movementX/15;
+        world.player.pitch -= movementY/15;
+        if (world.player.pitch > 90) {
+            world.player.pitch = 90;
+        } else if (world.player.pitch < -90) {
+            world.player.pitch = -90;
+        }
+    }
+
+    var handleMouseDown = function (event) {
+        if (document.fullscreenElement !== canvas &&
+            document.mozFullscreenElement !== canvas &&
+            document.webkitFullscreenElement !== canvas) {
+            
+            console.log("About to request fullscreen");
+            canvas.requestFullscreen = canvas.requestFullscreen ||
+                canvas.mozRequestFullscreen ||
+                canvas.webkitRequestFullscreen;
+            canvas.requestFullscreen();
+        }
+            
+        if (event.button === 0) {
+            world.deleteCube();
+        } else if (event.button === 2) {
+            world.placeCube("dirt");
+        }
     }
 
     var handleResize = function() {
@@ -183,18 +210,7 @@ var initControls = function (canvas, player) {
         console.log("Don't have pointer lock.");
     }
 
-    document.onmousedown = function () {
-        if (document.fullscreenElement !== canvas &&
-            document.mozFullscreenElement !== canvas &&
-            document.webkitFullscreenElement !== canvas) {
-            
-            console.log("About to request fullscreen");
-            canvas.requestFullscreen = canvas.requestFullscreen ||
-                canvas.mozRequestFullscreen ||
-                canvas.webkitRequestFullscreen;
-            canvas.requestFullscreen();
-        }
-    }
+    document.onmousedown = handleMouseDown;
 
     document.onkeydown = handleKeyDown;
     document.onkeyup = handleKeyUp;

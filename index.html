@@ -2,6 +2,7 @@
   <head>
     <script type="text/javascript" src="libraries/glMatrix-0.9.5.min.js"></script>
     <script type="text/javascript" src="libraries/webgl-utils.js"></script>
+    <script type="text/javascript" src="libraries/perlin.js"></script>
 
     <script id="shader-fs" type="x-shader/x-fragment">
       precision mediump float;
@@ -50,8 +51,13 @@
       }
     </script>
 
+    <script type="text/javascript" src="assets/tileset.js"></script>
+
+    <script type="text/javascript" src="util.js"></script>
     <script type="text/javascript" src="controls.js"></script>
     <script type="text/javascript" src="cube.js"></script>
+    <script type="text/javascript" src="chunk.js"></script>
+    <script type="text/javascript" src="world.js"></script>
     <script type="text/javascript" src="script.js"></script>
     
     <style type="text/css">
@@ -69,8 +75,6 @@
     <br>
     <div id="framerate">10</div>
     <br>
-    <input type="checkbox" id="dvorak" checked /> Use Dvorak-compatible controls
-
     <input type="checkbox" id="lighting" checked /> Use lighting
     <br>
 
