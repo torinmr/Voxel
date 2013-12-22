@@ -1,6 +1,6 @@
 var tileset = {
   name: "default",
-  tileset: "tiles_1.png",
+  image: "tiles_1.png",
   resolution: 128,
   dimension: 4,
   tiles: [
