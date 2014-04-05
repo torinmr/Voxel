@@ -1,0 +1,42 @@
+I want to switch to using a component-entity system for this game. I'm already running into nasty spaghetti code with trying to add a player, and obviously it would get much worse if I wanted to have monsters, projectiles, etc.
+
+There are a lot of different ways to implement a component-entity system. Here is a description of the one I'm considering for this game:
+
+---------------------------------------------------------------
+Point one: There are no entity objects. Instead, each object has a unique id, and all the components of each type are stored together. Entities are defined implicitly by the components they have.
+
+Consider the following example: there are five components, Position, Input, AI, Draw, and Physics, and there are three entities in the game, a player (id = 1), a monster (id = 2), and a cloud (id = 3). Then, the game state might look like this:
+
+PositionComponents = { 1: pos=(5,7),
+                       2: pos=(6,8),
+                       3: pos=(50, 17) }
+InputComponents    = { 3: source="Keyboard" }
+AIComponents       = { 2: target=1 }
+DrawComponents     = { 1: graphic="player.png",
+                       2: graphic="monster.png",
+                       3: graphic="cloud.png" }
+PhysicsComponents  = { 1: fallspeed=4,
+                       2: fallspeed=7 }
+
+Notice that every entity has a Postition and a Draw component, but the Input component is only used by the player, and the AI component is only used by the monster. The Physics component is used by the monster and player entities, but not by the cloud entity. Also note that nowhere does it list all the components that make up, for example, the player. To see if a certain entity has a certain component, query the appropriate component object for the appropirate id: for example, PhysicsComponents[3] is non-null iff the cloud entity has a physics component (it does not).
+
+---------------------------------------------------------------
+Point two: Components are pure data. All game logic is handled by subsystems. A subsystem iterates over all of the components of a certain type and handles a relevant part of the game logic. For example, the physics subsystem for the above example might look like this:
+
+PhysicsSubsystem:
+    Update():
+        for (id : PhysicsComponents):
+            PositionComponents.id.pos.y -= PhysicsComponents.id.fallspeed
+
+One thing to note is that this subsystem implies a dependency: an entity that has a physics component must also have a position component. Component dependencies would have to be declared in some way, and could be enforced at entity creation: if I try to create an entity with a Physics component but no Position component, the entity creater method would return an error. Then, assuming that a subsystem never uses a component it is not dependent on, we don't have to worry about checking for the existence of components. This reduces overhead, and it's not clear how we could recover from such an error anyway.
+
+---------------------------------------------------------------
+Point three: The subsystems are called one at a time, in a specified order, from the main game loop. The main loop for this example might look like:
+
+while true:
+    InputSubsystem.Update()
+    AISubsystem.Update()
+    PhysicsSubsystem.Update()
+    DrawingSubsystem.Update()
+
+Note that not every component has a subsystem. For example, there is no Position subsystem. However, the Input, AI, and Physics subsystems presumably modify Position components, and the Drawing subsystem probably uses it to know where to draw the sprite.

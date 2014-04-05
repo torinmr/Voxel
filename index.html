@@ -46,7 +46,7 @@
         } else {
           vec3 transformedNormal = uNMatrix * aVertexNormal;
           float directionalLightWeighting = max(dot(transformedNormal, uLightingDirection), 0.0);
-          vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+          vLightWeighting = min(uAmbientColor + uDirectionalColor * directionalLightWeighting, 1.0);
         }
       }
     </script>
@@ -83,14 +83,14 @@
       <tr>
         <td><b>Direction:</b>
         <td>X: <input type="text" id="lightDirectionX" value="0.5" />
-        <td>Y: <input type="text" id="lightDirectionY" value="1.0" />
+        <td>Y: <input type="text" id="lightDirectionY" value="-1.0" />
         <td>Z: <input type="text" id="lightDirectionZ" value="-0.5" />
       </tr>
       <tr>
         <td><b>Color:</b>
-        <td>R: <input type="text" id="directionalR" value="0.8" />
-        <td>G: <input type="text" id="directionalG" value="0.8" />
-        <td>B: <input type="text" id="directionalB" value="0.8" />
+        <td>R: <input type="text" id="directionalR" value="0.3" />
+        <td>G: <input type="text" id="directionalG" value="0.3" />
+        <td>B: <input type="text" id="directionalB" value="0.3" />
       </tr>
     </table>
     <br>
@@ -99,9 +99,9 @@
     <table style="border: 0; padding: 10px;">
       <tr>
         <td><b>Color:</b>
-          <td>R: <input type="text" id="ambientR" value="0.4" />
-          <td>G: <input type="text" id="ambientG" value="0.4" />
-          <td>B: <input type="text" id="ambientB" value="0.4" />
+          <td>R: <input type="text" id="ambientR" value="0.3" />
+          <td>G: <input type="text" id="ambientG" value="0.3" />
+          <td>B: <input type="text" id="ambientB" value="0.3" />
       </tr>
     </table>
 

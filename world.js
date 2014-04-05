@@ -133,11 +133,11 @@ var World;
         // Set up perspective and movement matrices
         mat4.perspective(45, canvas.width / canvas.height, 0.1, 1000.0, pMatrix);
 
-        mat4.identity(mvMatrix);
-        mat4.rotate(mvMatrix, degToRad(-this.player.pitch), [1, 0, 0]);
-        mat4.rotate(mvMatrix, degToRad(-this.player.yaw), [0, 1, 0]);
-        mat4.translate(mvMatrix, [-this.player.x, -this.player.y, -this.player.z]);
+        mat4.rotate(pMatrix, degToRad(-this.player.pitch), [1, 0, 0]);
+        mat4.rotate(pMatrix, degToRad(-this.player.yaw), [0, 1, 0]);
+        mat4.translate(pMatrix, [-this.player.x, -this.player.y, -this.player.z]);
 
+        mat4.identity(mvMatrix);
         for (var i=0; i < this.numChunksX; i++) {
             for (var j=0; j < this.numChunksY; j++) {
                 for (var k=0; k < this.numChunksZ; k++) {

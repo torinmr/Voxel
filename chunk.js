@@ -355,6 +355,7 @@ var Chunk;
                 lightingSingleton.lightDirectionY,
                 lightingSingleton.lightDirectionZ,
             ];
+            
             var adjustedLD = vec3.create();
             vec3.normalize(lightingDirection, adjustedLD);
             vec3.scale(adjustedLD, -1);

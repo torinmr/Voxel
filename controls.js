@@ -3,20 +3,17 @@
 var handleKeys;
 
 var initControls = function (canvas) {
-    world.player.x = 20.0;
-    world.player.y = 12.0;
-    world.player.z = 20.0;
-    world.player.pitch = 0.0;
-    world.player.yaw = 0.0;
 
     var dvorak = true;
+    var flyMode = false;
     var handleKeysInternal = function () {
         var verticalSpeed = 0.4;
         var forwardSpeed = 0.8;
         var backSpeed = 0.8;
         var strafeSpeed = 0.5;
 
-        var left, right, forward, back, up, down, run;
+        var left, right, forward, back, up, down;
+        var run, jump, fly;
 
         var cy = Math.cos(degToRad(world.player.yaw));
         var cp = Math.cos(degToRad(world.player.pitch));
@@ -30,7 +27,6 @@ var initControls = function (canvas) {
             back         = currentlyPressedKeys[79];  // O
             up           = currentlyPressedKeys[222]; // '
             down         = currentlyPressedKeys[81];  // Q
-            run          = currentlyPressedKeys[16];  // SHIFT
         } else {
             left         = currentlyPressedKeys[65];  // A
             right        = currentlyPressedKeys[68];  // D
@@ -38,53 +34,95 @@ var initControls = function (canvas) {
             back         = currentlyPressedKeys[83];  // S
             up           = currentlyPressedKeys[81];  // Q
             down         = currentlyPressedKeys[88];  // X
-            run          = currentlyPressedKeys[16];  // SHIFT
         }
         
-        if (run) {
-            verticalSpeed *= 10;
-            forwardSpeed *= 10;
-            backSpeed *= 10;
-            strafeSpeed *= 10;
-        }
-        if (up) {
-            world.player.y += verticalSpeed;
-        }
-        if (down) {
-            world.player.y -= verticalSpeed;
-        }
-       
-        var adjustment = 1;
-        if ((forward || back) && (left || right)) {
-            adjustment = 1/Math.sqrt(2);
-        }
-                                    
+        run              = currentlyPressedKeys[16];  // SHIFT
+        jump             = currentlyPressedKeys[32];  // SPACEBAR
 
-        if (forward && !back) {
-            world.player.z -= forwardSpeed*cy*cp*adjustment;
-            world.player.x -= forwardSpeed*sy*cp*adjustment;
-            world.player.y += forwardSpeed*sp*adjustment;
-        }
+        if (flyMode) {
+            if (run) {
+                verticalSpeed *= 10;
+                forwardSpeed *= 10;
+                backSpeed *= 10;
+                strafeSpeed *= 10;
+            }
+            if (up) {
+                world.player.y += verticalSpeed;
+            }
+            if (down) {
+                world.player.y -= verticalSpeed;
+            }
+            
+            var adjustment = 1;
+            if ((forward || back) && (left || right)) {
+                adjustment = 1/Math.sqrt(2);
+            }
+            
 
-        if (back && !forward) {
-            world.player.z += backSpeed*cy*cp*adjustment;
-            world.player.x += backSpeed*sy*cp*adjustment;
-            world.player.y -= backSpeed*sp*adjustment;
-        }
+            if (forward && !back) {
+                world.player.z -= forwardSpeed*cy*cp*adjustment;
+                world.player.x -= forwardSpeed*sy*cp*adjustment;
+                world.player.y += forwardSpeed*sp*adjustment;
+            }
 
-        if (left && !right) {
-            world.player.z += strafeSpeed*sy*adjustment;
-            world.player.x -= strafeSpeed*cy*adjustment;
-        }
+            if (back && !forward) {
+                world.player.z += backSpeed*cy*cp*adjustment;
+                world.player.x += backSpeed*sy*cp*adjustment;
+                world.player.y -= backSpeed*sp*adjustment;
+            }
 
-        if (right && !left) {
-            world.player.z -= strafeSpeed*sy*adjustment;
-            world.player.x += strafeSpeed*cy*adjustment;
+            if (left && !right) {
+                world.player.z += strafeSpeed*sy*adjustment;
+                world.player.x -= strafeSpeed*cy*adjustment;
+            }
+
+            if (right && !left) {
+                world.player.z -= strafeSpeed*sy*adjustment;
+                world.player.x += strafeSpeed*cy*adjustment;
+            }
+        } else {
+            // flyMode === false
+            
+            if (run) {
+                forwardSpeed *= 2;
+                backSpeed *= 2;
+                strafeSpeed *= 2;
+            }
+            
+            if (jump) {
+                player.ySpeed += 10.0;
+            }
+            
+            var adjustment = 1;
+            if ((forward || back) && (left || right)) {
+                adjustment = 1/Math.sqrt(2);
+            }
+            
+
+            if (forward && !back) {
+                world.player.z -= forwardSpeed*cy*adjustment;
+                world.player.x -= forwardSpeed*sy*adjustment;
+            }
+
+            if (back && !forward) {
+                world.player.z += backSpeed*cy*adjustment;
+                world.player.x += backSpeed*sy*adjustment;
+            }
+            
+            if (left && !right) {
+                world.player.z += strafeSpeed*sy*adjustment;
+                world.player.x -= strafeSpeed*cy*adjustment;
+            }
+            
+            if (right && !left) {
+                world.player.z -= strafeSpeed*sy*adjustment;
+                world.player.x += strafeSpeed*cy*adjustment;
+            }
         }
     }
-
+    
     handleKeys = handleKeysInternal;
-
+    
     var currentlyPressedKeys = {};
     
     function handleKeyDown(event) {
@@ -96,8 +134,13 @@ var initControls = function (canvas) {
             dvorak = ! dvorak;
             console.log("dvorak now = " + dvorak);
         }
+
+        if (event.keyCode === 13) { // ENTER
+            flyMode = !flyMode;
+            console.log("flyMode now = " + flyMode);
+        }
     }
-    
+        
     function handleKeyUp(event) {
         currentlyPressedKeys[event.keyCode] = false;
     }

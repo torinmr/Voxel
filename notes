@@ -1,0 +1,1 @@
+I think that the weird line effect around each cube is a result of using one texture map for all the cube textures - you're seeing the very edge of the adjacent texture. I think I need to use a texture map where there's a "bleed" zone around each cube's texture, or maybe programatically generate one.
