@@ -4,8 +4,8 @@ var handleKeys;
 
 var initControls = function (canvas) {
 
-    var dvorak = true;
-    var flyMode = false;
+    var dvorak = false;
+    var flyMode = true;
     var handleKeysInternal = function () {
         var verticalSpeed = 0.4;
         var forwardSpeed = 0.8;
