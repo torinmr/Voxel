@@ -118,31 +118,38 @@ function setMatrixUniforms() {
 }
 
 var lightingSingleton = {};
-
+var sunAngle = 90;
 function updateLighting() {
     lightingSingleton.lightingOn =
         document.getElementById("lighting").checked;
 
-    lightingSingleton.ambientR =
-        parseFloat(document.getElementById("ambientR").value);
-    lightingSingleton.ambientG =
-        parseFloat(document.getElementById("ambientG").value);
-    lightingSingleton.ambientB =
-        parseFloat(document.getElementById("ambientB").value);
+    lightingSingleton.ambientR = 0.2;
+    lightingSingleton.ambientG = 0.2;
+    lightingSingleton.ambientB = 0.2;
 
-    lightingSingleton.lightDirectionX =
-        parseFloat(document.getElementById("lightDirectionX").value);
-    lightingSingleton.lightDirectionY =
-        parseFloat(document.getElementById("lightDirectionY").value);
-    lightingSingleton.lightDirectionZ =
-        parseFloat(document.getElementById("lightDirectionZ").value);
+    sunAngle = (sunAngle + 0.3) % 360 ;
+    
+    lightingSingleton.lightDirectionX = Math.sin(degToRad(sunAngle));
+    lightingSingleton.lightDirectionY = -Math.cos(degToRad(sunAngle));
+    lightingSingleton.lightDirectionZ = Math.sin(degToRad(sunAngle));
 
-    lightingSingleton.directionalR =
-        parseFloat(document.getElementById("directionalR").value);
-    lightingSingleton.directionalG =
-        parseFloat(document.getElementById("directionalG").value);
-    lightingSingleton.directionalB =
-        parseFloat(document.getElementById("directionalB").value);
+    lightingSingleton.directionalR = 0.4 + 0.05*Math.abs(Math.sin(degToRad(sunAngle)));
+    lightingSingleton.directionalG = 0.4 - 0.05*Math.abs(Math.sin(degToRad(sunAngle)));
+    lightingSingleton.directionalB = 0.4 - 0.05*Math.abs(Math.sin(degToRad(sunAngle)));
+
+    if (sunAngle > 75 && sunAngle <= 105) {
+        lightingSingleton.directionalR *= (105 - sunAngle) / 30;
+        lightingSingleton.directionalG *= (105 - sunAngle) / 30;
+        lightingSingleton.directionalB *= (105 - sunAngle) / 30;
+    } else if (sunAngle > 265 && sunAngle <= 285) {
+        lightingSingleton.directionalR *= (sunAngle - 265) / 30;
+        lightingSingleton.directionalG *= (sunAngle - 265) / 30;
+        lightingSingleton.directionalB *= (sunAngle - 265) / 30;
+    } else if (sunAngle > 105 && sunAngle <= 265) {
+        lightingSingleton.directionalR = 0.0;
+        lightingSingleton.directionalG = 0.0;
+        lightingSingleton.directionalB = 0.0;
+    }
 }
 
 var world;

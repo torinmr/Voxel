@@ -1,1 +1,3 @@
 I think that the weird line effect around each cube is a result of using one texture map for all the cube textures - you're seeing the very edge of the adjacent texture. I think I need to use a texture map where there's a "bleed" zone around each cube's texture, or maybe programatically generate one.
+
+Edit: I fixed this. (though I did it by manually fixing the textures, there should be a way to do this automatically.) But now there's still a white glare on distant flat bits of terrain. I'm not sure why this is happening. It may be that I didn't make enough bleed room for each texture, or something like that.
