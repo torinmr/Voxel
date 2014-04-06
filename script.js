@@ -117,39 +117,120 @@ function setMatrixUniforms() {
     gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
 }
 
-var lightingSingleton = {};
-var sunAngle = 90;
+var lightingSingleton = {
+    daytimeAmbientR: 0.475,
+    daytimeAmbientG: 0.5,
+    daytimeAmbientB: 0.55,
+
+    nighttimeAmbientR: 0.15,
+    nighttimeAmbientG: 0.2,
+    nighttimeAmbientB: 0.25,
+
+    sunsetSunriseR: 0.5,
+    sunsetSunriseG: .35,
+    sunsetSunriseB: .25,
+
+    sunlightR: 0.53,
+    sunlightG: 0.53,
+    sunlightB: 0.47,
+
+    // Night/Day cycle information.
+    // Everything is measured in hours, with 0 being midnight and 23 being 11 pm.
+    // Fractional values are acceptable.
+    timeOfDay: 3,
+    dawnStart: 3,
+    dayStart: 8,
+    duskStart: 16,
+    nightStart: 21,
+};
+
 function updateLighting() {
-    lightingSingleton.lightingOn =
+    var l = lightingSingleton;
+
+    l.lightingOn =
         document.getElementById("lighting").checked;
 
-    lightingSingleton.ambientR = 0.45;
-    lightingSingleton.ambientG = 0.45;
-    lightingSingleton.ambientB = 0.45;
+    l.timeOfDay = (l.timeOfDay + 0.02) % 24;
 
-    sunAngle = (sunAngle + 0.3) % 360 ;
+    var angleOfSun = Math.PI*(l.timeOfDay - l.dawnStart) / (l.nightStart - l.dawnStart);
     
-    lightingSingleton.lightDirectionX = Math.sin(degToRad(sunAngle));
-    lightingSingleton.lightDirectionY = -Math.cos(degToRad(sunAngle));
-    lightingSingleton.lightDirectionZ = Math.sin(degToRad(sunAngle));
+    l.lightDirectionX = -Math.cos(angleOfSun);
+    l.lightDirectionY = -Math.sin(angleOfSun);
+    l.lightDirectionZ = -Math.cos(angleOfSun);
 
-    lightingSingleton.directionalR = 0.5 + 0.05*Math.abs(Math.sin(degToRad(sunAngle)));
-    lightingSingleton.directionalG = 0.5 - 0.05*Math.abs(Math.sin(degToRad(sunAngle)));
-    lightingSingleton.directionalB = 0.5 - 0.05*Math.abs(Math.sin(degToRad(sunAngle)));
+    // The night condition implicitly assumes that night includes timeOfDay == 0
+    // (i.e. midnight). Probably should fix sometime.
+    if (l.timeOfDay > l.nightStart || l.timeOfDay <= l.dawnStart) {
+        // Night
+        l.directionalR = 0.0;
+        l.directionalG = 0.0;
+        l.directionalB = 0.0;
 
-    if (sunAngle > 75 && sunAngle <= 105) {
-        lightingSingleton.directionalR *= (105 - sunAngle) / 30;
-        lightingSingleton.directionalG *= (105 - sunAngle) / 30;
-        lightingSingleton.directionalB *= (105 - sunAngle) / 30;
-    } else if (sunAngle > 265 && sunAngle <= 285) {
-        lightingSingleton.directionalR *= (sunAngle - 265) / 30;
-        lightingSingleton.directionalG *= (sunAngle - 265) / 30;
-        lightingSingleton.directionalB *= (sunAngle - 265) / 30;
-    } else if (sunAngle > 105 && sunAngle <= 265) {
-        lightingSingleton.directionalR = 0.0;
-        lightingSingleton.directionalG = 0.0;
-        lightingSingleton.directionalB = 0.0;
+        l.ambientR = l.nighttimeAmbientR;
+        l.ambientG = l.nighttimeAmbientG;
+        l.ambientB = l.nighttimeAmbientB;
     }
+    else if (l.timeOfDay > l.dawnStart && l.timeOfDay <= l.dayStart) {
+        // Dawn
+        var dawnProgress = (l.timeOfDay - l.dawnStart) / (l.dayStart - l.dawnStart);
+
+        if (dawnProgress < 0.5) {
+            l.directionalR = l.sunsetSunriseR * 2 * dawnProgress;
+            l.directionalG = l.sunsetSunriseG * 2 * dawnProgress;
+            l.directionalB = l.sunsetSunriseB * 2 * dawnProgress;
+        } else {
+            l.directionalR = l.sunsetSunriseR * 2 * (1 - dawnProgress)
+                + l.sunlightR * 2 * (dawnProgress - 0.5);
+            l.directionalG = l.sunsetSunriseG * 2 * (1 - dawnProgress)
+                + l.sunlightG * 2 * (dawnProgress - 0.5);
+            l.directionalB = l.sunsetSunriseB * 2 * (1 - dawnProgress)
+                + l.sunlightB * 2 * (dawnProgress - 0.5);
+        }
+
+        l.ambientR = dawnProgress * l.daytimeAmbientR
+            + (1 - dawnProgress) * l.nighttimeAmbientR;
+        l.ambientG = dawnProgress * l.daytimeAmbientG
+            + (1 - dawnProgress) * l.nighttimeAmbientG;
+        l.ambientB = dawnProgress * l.daytimeAmbientB
+            + (1 - dawnProgress) * l.nighttimeAmbientB;
+    }
+    else if (l.timeOfDay > l.dayStart && l.timeOfDay <= l.duskStart) {
+        // Day
+        l.directionalR = l.sunlightR;
+        l.directionalG = l.sunlightG;
+        l.directionalB = l.sunlightB;
+
+        l.ambientR = l.daytimeAmbientR;
+        l.ambientG = l.daytimeAmbientG;
+        l.ambientB = l.daytimeAmbientB;        
+    }
+    else if (l.timeOfDay > l.duskStart && l.timeOfDay <= l.nightStart) {
+        // Dusk
+        var duskProgress = (l.timeOfDay - l.duskStart) / (l.nightStart - l.duskStart);
+
+        if (duskProgress < 0.5) {
+            l.directionalR = l.sunlightR * 2 * (0.5 - duskProgress)
+                + l.sunsetSunriseR * 2 * duskProgress;
+            l.directionalG = l.sunlightG * 2 * (0.5 - duskProgress)
+                + l.sunsetSunriseG * 2 * duskProgress;
+            l.directionalB = l.sunlightB * 2 * (0.5 - duskProgress)
+                + l.sunsetSunriseB * 2 * duskProgress;
+        } else {
+            l.directionalR = l.sunsetSunriseR * 2 * (1 - duskProgress);
+            l.directionalG = l.sunsetSunriseG * 2 * (1 - duskProgress);
+            l.directionalB = l.sunsetSunriseB * 2 * (1 - duskProgress);
+        }
+        
+        l.ambientR = duskProgress * l.nighttimeAmbientR
+            + (1 - duskProgress) * l.daytimeAmbientR;
+        l.ambientG = duskProgress * l.nighttimeAmbientG
+            + (1 - duskProgress) * l.daytimeAmbientG;
+        l.ambientB = duskProgress * l.nighttimeAmbientB
+            + (1 - duskProgress) * l.daytimeAmbientB;
+    } else {
+        console.log("Error in day/night cycle!");
+    }
+//    console.log(l.timeOfDay);
 }
 
 var world;
