@@ -126,13 +126,13 @@ var lightingSingleton = {
     nighttimeAmbientG: 0.2,
     nighttimeAmbientB: 0.25,
 
-    sunsetSunriseR: 0.5,
-    sunsetSunriseG: .35,
-    sunsetSunriseB: .25,
+    sunsetSunriseR: 1.0,
+    sunsetSunriseG: .7,
+    sunsetSunriseB: .5,
 
-    sunlightR: 0.53,
-    sunlightG: 0.53,
-    sunlightB: 0.47,
+    sunlightR: 1.1,
+    sunlightG: 1.1,
+    sunlightB: 0.9,
 
     // Night/Day cycle information.
     // Everything is measured in hours, with 0 being midnight and 23 being 11 pm.
