@@ -123,9 +123,9 @@ function updateLighting() {
     lightingSingleton.lightingOn =
         document.getElementById("lighting").checked;
 
-    lightingSingleton.ambientR = 0.2;
-    lightingSingleton.ambientG = 0.2;
-    lightingSingleton.ambientB = 0.2;
+    lightingSingleton.ambientR = 0.45;
+    lightingSingleton.ambientG = 0.45;
+    lightingSingleton.ambientB = 0.45;
 
     sunAngle = (sunAngle + 0.3) % 360 ;
     
@@ -133,9 +133,9 @@ function updateLighting() {
     lightingSingleton.lightDirectionY = -Math.cos(degToRad(sunAngle));
     lightingSingleton.lightDirectionZ = Math.sin(degToRad(sunAngle));
 
-    lightingSingleton.directionalR = 0.4 + 0.05*Math.abs(Math.sin(degToRad(sunAngle)));
-    lightingSingleton.directionalG = 0.4 - 0.05*Math.abs(Math.sin(degToRad(sunAngle)));
-    lightingSingleton.directionalB = 0.4 - 0.05*Math.abs(Math.sin(degToRad(sunAngle)));
+    lightingSingleton.directionalR = 0.5 + 0.05*Math.abs(Math.sin(degToRad(sunAngle)));
+    lightingSingleton.directionalG = 0.5 - 0.05*Math.abs(Math.sin(degToRad(sunAngle)));
+    lightingSingleton.directionalB = 0.5 - 0.05*Math.abs(Math.sin(degToRad(sunAngle)));
 
     if (sunAngle > 75 && sunAngle <= 105) {
         lightingSingleton.directionalR *= (105 - sunAngle) / 30;
