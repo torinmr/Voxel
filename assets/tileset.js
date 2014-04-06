@@ -2,124 +2,124 @@ var tileset = {
   name: "default",
   image: "tiles_1.png",
   resolution: 128,
-  dimension: 4,
+  dimension: 8,
   tiles: [
     {
       name: "dirt",
-      front:  { x: 0, y: 3 },
-      back:   { x: 0, y: 3 },
-      top:    { x: 0, y: 3 },
-      bottom: { x: 0, y: 3 },
-      left:   { x: 0, y: 3 },
-      right:  { x: 0, y: 3 }
+      front:  { x: 0.5, y: 6.5 },
+      back:   { x: 0.5, y: 6.5 },
+      top:    { x: 0.5, y: 6.5 },
+      bottom: { x: 0.5, y: 6.5 },
+      left:   { x: 0.5, y: 6.5 },
+      right:  { x: 0.5, y: 6.5 }
     },
     {
       name: "grass",
-      front:  { x: 2, y: 3 },
-      back:   { x: 2, y: 3 },
-      top:    { x: 1, y: 3 },
-      bottom: { x: 0, y: 3 },
-      left:   { x: 2, y: 3 },
-      right:  { x: 2, y: 3 }
+      front:  { x: 4.5, y: 6.5 },
+      back:   { x: 4.5, y: 6.5 },
+      top:    { x: 2.5, y: 6.5 },
+      bottom: { x: 0.5, y: 6.5 },
+      left:   { x: 4.5, y: 6.5 },
+      right:  { x: 4.5, y: 6.5 }
     },
     {
       name: "sand",
-      front:  { x: 3, y: 3 },
-      back:   { x: 3, y: 3 },
-      top:    { x: 3, y: 3 },
-      bottom: { x: 3, y: 3 },
-      left:   { x: 3, y: 3 },
-      right:  { x: 3, y: 3 }
+      front:  { x: 6.5, y: 6.5 },
+      back:   { x: 6.5, y: 6.5 },
+      top:    { x: 6.5, y: 6.5 },
+      bottom: { x: 6.5, y: 6.5 },
+      left:   { x: 6.5, y: 6.5 },
+      right:  { x: 6.5, y: 6.5 }
     },
     {
       name: "snow",
-      front:  { x: 0, y: 2 },
-      back:   { x: 0, y: 2 },
-      top:    { x: 0, y: 2 },
-      bottom: { x: 0, y: 2 },
-      left:   { x: 0, y: 2 },
-      right:  { x: 0, y: 2 }
+      front:  { x: 0.5, y: 4.5 },
+      back:   { x: 0.5, y: 4.5 },
+      top:    { x: 0.5, y: 4.5 },
+      bottom: { x: 0.5, y: 4.5 },
+      left:   { x: 0.5, y: 4.5 },
+      right:  { x: 0.5, y: 4.5 }
     },
     {
       name: "snowy_dirt",
-      front:  { x: 1, y: 2 },
-      back:   { x: 1, y: 2 },
-      top:    { x: 0, y: 2 },
-      bottom: { x: 0, y: 3 },
-      left:   { x: 1, y: 2 },
-      right:  { x: 1, y: 2 }
+      front:  { x: 2.5, y: 4.5 },
+      back:   { x: 2.5, y: 4.5 },
+      top:    { x: 0.5, y: 4.5 },
+      bottom: { x: 0.5, y: 6.5 },
+      left:   { x: 2.5, y: 4.5 },
+      right:  { x: 2.5, y: 4.5 }
     },
     {
       name: "bedrock",
-      front:  { x: 2, y: 2 },
-      back:   { x: 2, y: 2 },
-      top:    { x: 2, y: 2 },
-      bottom: { x: 2, y: 2 },
-      left:   { x: 2, y: 2 },
-      right:  { x: 2, y: 2 }
+      front:  { x: 4.5, y: 4.5 },
+      back:   { x: 4.5, y: 4.5 },
+      top:    { x: 4.5, y: 4.5 },
+      bottom: { x: 4.5, y: 4.5 },
+      left:   { x: 4.5, y: 4.5 },
+      right:  { x: 4.5, y: 4.5 }
     },
     {
       name: "stone",
-      front:  { x: 3, y: 2 },
-      back:   { x: 3, y: 2 },
-      top:    { x: 3, y: 2 },
-      bottom: { x: 3, y: 2 },
-      left:   { x: 3, y: 2 },
-      right:  { x: 3, y: 2 }
+      front:  { x: 6.5, y: 4.5 },
+      back:   { x: 6.5, y: 4.5 },
+      top:    { x: 6.5, y: 4.5 },
+      bottom: { x: 6.5, y: 4.5 },
+      left:   { x: 6.5, y: 4.5 },
+      right:  { x: 6.5, y: 4.5 }
     },
     {
       name: "brick",
-      front:  { x: 0, y: 1 },
-      back:   { x: 0, y: 1 },
-      top:    { x: 0, y: 1 },
-      bottom: { x: 0, y: 1 },
-      left:   { x: 0, y: 1 },
-      right:  { x: 0, y: 1 }
+      front:  { x: 0.5, y: 2.5 },
+      back:   { x: 0.5, y: 2.5 },
+      top:    { x: 0.5, y: 2.5 },
+      bottom: { x: 0.5, y: 2.5 },
+      left:   { x: 0.5, y: 2.5 },
+      right:  { x: 0.5, y: 2.5 }
     },
     {
       name: "log",
-      front:  { x: 1, y: 1 },
-      back:   { x: 1, y: 1 },
-      top:    { x: 2, y: 1 },
-      bottom: { x: 2, y: 1 },
-      left:   { x: 1, y: 1 },
-      right:  { x: 1, y: 1 }
+      front:  { x: 2.5, y: 2.5 },
+      back:   { x: 2.5, y: 2.5 },
+      top:    { x: 4.5, y: 2.5 },
+      bottom: { x: 4.5, y: 2.5 },
+      left:   { x: 2.5, y: 2.5 },
+      right:  { x: 2.5, y: 2.5 }
     },
     {
       name: "plank",
-      front:  { x: 3, y: 1 },
-      back:   { x: 3, y: 1 },
-      top:    { x: 3, y: 1 },
-      bottom: { x: 3, y: 1 },
-      left:   { x: 3, y: 1 },
-      right:  { x: 3, y: 1 }
+      front:  { x: 6.5, y: 2.5 },
+      back:   { x: 6.5, y: 2.5 },
+      top:    { x: 6.5, y: 2.5 },
+      bottom: { x: 6.5, y: 2.5 },
+      left:   { x: 6.5, y: 2.5 },
+      right:  { x: 6.5, y: 2.5 }
     },
     {
       name: "clay",
-      front:  { x: 0, y: 0 },
-      back:   { x: 0, y: 0 },
-      top:    { x: 0, y: 0 },
-      bottom: { x: 0, y: 0 },
-      left:   { x: 0, y: 0 },
-      right:  { x: 0, y: 0 }
+      front:  { x: 0.5, y: 0.5 },
+      back:   { x: 0.5, y: 0.5 },
+      top:    { x: 0.5, y: 0.5 },
+      bottom: { x: 0.5, y: 0.5 },
+      left:   { x: 0.5, y: 0.5 },
+      right:  { x: 0.5, y: 0.5 }
     },
     {
       name: "gravel",
-      front:  { x: 1, y: 0 },
-      back:   { x: 1, y: 0 },
-      top:    { x: 1, y: 0 },
-      bottom: { x: 1, y: 0 },
-      left:   { x: 1, y: 0 },
-      right:  { x: 1, y: 0 }
+      front:  { x: 2.5, y: 0.5 },
+      back:   { x: 2.5, y: 0.5 },
+      top:    { x: 2.5, y: 0.5 },
+      bottom: { x: 2.5, y: 0.5 },
+      left:   { x: 2.5, y: 0.5 },
+      right:  { x: 2.5, y: 0.5 }
     },
     {
       name: "debug",
-      front:  { x: 2, y: 0 },
-      back:   { x: 2, y: 0 },
-      top:    { x: 3, y: 0 },
-      bottom: { x: 3, y: 0 },
-      left:   { x: 2, y: 0 },
-      right:  { x: 2, y: 0 }
+      front:  { x: 4.5, y: 0.5 },
+      back:   { x: 4.5, y: 0.5 },
+      top:    { x: 6.5, y: 0.5 },
+      bottom: { x: 6.5, y: 0.5 },
+      left:   { x: 4.5, y: 0.5 },
+      right:  { x: 4.5, y: 0.5 }
     }
   ]
 }

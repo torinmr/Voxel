@@ -4,9 +4,9 @@ var World;
 
 (function () {
     var _World = function () {
-        this.numChunksX = 32;
+        this.numChunksX = 16;
         this.numChunksY = 8;
-        this.numChunksZ = 32;
+        this.numChunksZ = 16;
         this.chunks = new Array(this.numChunksX*this.numChunksY*this.numChunksZ);
 
         // Make the chunks
