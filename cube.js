@@ -7,13 +7,22 @@ var Cube;
 
     function handleLoadedTexture(texture) {
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        
+
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+
+        var anisotropic_ext =
+            gl.getExtension("MOZ_EXT_texture_filter_anisotropic")
+            || gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+        console.log(anisotropic_ext);
+        if (anisotropic_ext) {
+            var max_anisotropy = gl.getParameter(anisotropic_ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+            gl.texParameterf(gl.TEXTURE_2D, anisotropic_ext.TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropy);
+        }
+
         gl.generateMipmap(gl.TEXTURE_2D);
-        
         gl.bindTexture(gl.TEXTURE_2D, null);
     }
 
